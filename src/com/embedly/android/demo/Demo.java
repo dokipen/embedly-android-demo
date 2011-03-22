@@ -150,22 +150,21 @@ public class Demo extends Activity {
 			throw new RuntimeException("Couldn't parse response", e);
 		}
 	}
+	
+	private void resetPage() {
+		embedWebView.loadData(LOADING, "text/html", "utf-8");
+		embedResult.setText("");
+
+		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.hideSoftInputFromWindow(embedUrl.getWindowToken(), 0);
+	}
 
 	public void fetchEmbed() {
 
 		final Handler handler = new Handler();
 		final Demo self = this;
-
-		handler.post(new Runnable() {
-
-			public void run() {
-				embedWebView.loadData(LOADING, "text/html", "utf-8");
-				embedResult.setText("");
-
-				InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				mgr.hideSoftInputFromWindow(embedUrl.getWindowToken(), 0);
-			}
-		});
+		
+		resetPage();
 
 		String url = embedUrl.getText().toString();
 		final HashMap<String, Object> params = new HashMap<String, Object>();
