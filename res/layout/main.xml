@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-    <WebView android:id="@+id/embedWebView" android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center"></WebView>
-    <TextView android:id="@+id/embedResult" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="0" android:background="#ffffff" android:typeface="monospace" android:textSize="8sp" android:textColor="#555555"></TextView>
-    <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout1" android:layout_height="wrap_content">
-        <EditText android:layout_width="fill_parent" android:hint="@string/text_label" android:id="@+id/queryUrl" android:layout_height="wrap_content" android:layout_weight="1"></EditText>
-        <Button android:layout_width="70dp" android:text="@string/button_label" android:id="@+id/embedButton" android:layout_height="fill_parent"></Button>
+    android:layout_height="fill_parent" android:orientation="vertical">
+    <LinearLayout android:id="@+id/linearLayout2" android:layout_width="match_parent" android:layout_height="fill_parent" android:layout_weight="1" android:orientation="vertical" android:background="#ffffff">
+        <WebView android:layout_height="fill_parent" android:id="@+id/embedWebView" android:layout_gravity="center" android:layout_width="fill_parent" android:layout_weight="1"></WebView>
+        <TextView android:padding="5sp" android:typeface="monospace" android:background="#ffffff" android:layout_width="wrap_content" android:textColor="#555555" android:layout_weight="0" android:layout_height="wrap_content" android:textSize="8sp" android:id="@+id/embedResult"></TextView>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout1" android:layout_height="50sp" android:paddingTop="3sp">
+        <EditText android:layout_width="fill_parent" android:hint="@string/text_label" android:id="@+id/queryUrl" android:layout_weight="1" android:height="40sp" android:layout_height="match_parent" android:singleLine="true"></EditText>
+        <Button android:layout_width="70dp" android:text="@string/button_label" android:id="@+id/embedButton" android:gravity="center_vertical" android:layout_gravity="center_vertical" android:layout_height="match_parent"></Button>
     </LinearLayout>
 </LinearLayout>
