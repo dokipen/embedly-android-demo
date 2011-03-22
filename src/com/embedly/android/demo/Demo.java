@@ -1,6 +1,7 @@
 package com.embedly.android.demo;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,7 +9,15 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.ClipboardManager;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +34,11 @@ public class Demo extends Activity {
 	private Button embedButton;
 	private EditText embedUrl;
 	private WebView embedWebView;
+	
+	private final static String LOADING = "<table width=100%25 height=100%25>"+
+	        "<tr><td valign=middle align=center><img "+
+	        "src=\"http://static.embed.ly/images/android-loader.gif\"/>" +
+	        "</td></tr></table>";
 	
     /** Called when the activity is first created. */
     @Override
@@ -44,19 +58,65 @@ public class Demo extends Activity {
 				fetchEmbed();
 			}
 		});
+        
+        registerForContextMenu(embedResult);
+		ClipboardManager clipboard = 
+			(ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+		clipboard.setText("http://www.flickr.com/photos/silent928/5550274021/");
     }
     
-    public void fetchEmbed() {
-    	InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-    	mgr.hideSoftInputFromWindow(embedUrl.getWindowToken(), 0);
-    	String url = embedUrl.getText().toString();
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("url", url);
-        params.put("maxwidth", "300");
-        JSONArray result = api.oembed(params);
+    
+    
+    @Override
+	protected void onPause() {
+		super.onPause();
+		try {
+			Class.forName("android.webkit.WebView").
+			  getMethod("onPause", (Class[]) null).
+			  invoke(embedWebView, (Object[]) null);
+			embedWebView.resumeTimers();
+		} catch (Exception e) {
+			throw new RuntimeException("Unknown issue when killing flash", e);
+		}
+	}
 
-        try {
-            JSONObject obj = result.getJSONObject(0);
+    @Override
+	protected void onResume() {
+		super.onResume();
+		try {
+			Class.forName("android.webkit.WebView").
+			  getMethod("onResume", (Class[]) null).
+			  invoke(embedWebView, (Object[]) null);
+			embedWebView.resumeTimers();
+		} catch (Exception e) {
+			throw new RuntimeException("Unknown issue when resuming flash", e);
+		}
+	}
+    
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.result, menu);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		
+		switch (item.getItemId()) {
+		case R.id.copy_result:
+			ClipboardManager clipboard = 
+				(ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+			clipboard.setText(embedResult.getText());
+			return true;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	public void onEmbedResponse(JSONArray response) {
+    	try {
+            JSONObject obj = response.getJSONObject(0);
             String type = obj.getString("type");
     		StringBuffer embedBuf = new StringBuffer();
     		
@@ -97,5 +157,40 @@ public class Demo extends Activity {
         } catch(JSONException e) {
         	throw new RuntimeException("Couldn't parse response", e);
         }
+    }
+    
+	public void fetchEmbed() {
+
+		final Handler handler = new Handler();
+    	final Demo self = this;
+    	
+		handler.post(new Runnable() {
+			
+			public void run() {
+		    	embedWebView.loadData(LOADING, "text/html", "utf-8");
+		    	embedResult.setText("");
+				
+		    	InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		    	mgr.hideSoftInputFromWindow(embedUrl.getWindowToken(), 0);
+			}
+		});
+
+    	String url = embedUrl.getText().toString();
+        final HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("url", url);
+        params.put("maxwidth", "300");
+		
+    	new Thread() {
+			@Override
+			public void run() {
+				final JSONArray response = api.oembed(params);
+				handler.post(new Runnable() {
+					public void run() {
+						self.onEmbedResponse(response);
+					}
+				});
+			}
+    	}.start();
+    	
     }
 }
