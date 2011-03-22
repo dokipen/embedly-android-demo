@@ -57,8 +57,6 @@ public class Demo extends Activity {
 		});
 
 		registerForContextMenu(embedResult);
-		ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-		clipboard.setText("http://www.flickr.com/photos/silent928/5550274021/");
 	}
 
 	@Override
@@ -100,14 +98,14 @@ public class Demo extends Activity {
 
 		switch (item.getItemId()) {
 		case R.id.copy_result:
-			ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			clipboard.setText(embedResult.getText());
+			((ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).
+			    setText(embedResult.getText());
 			return true;
 		}
 		return super.onContextItemSelected(item);
 	}
 
-	public void onEmbedResponse(JSONArray response) {
+	public void onEmbedResponse(JSONArray response, long elapsed) {
 		try {
 			JSONObject obj = response.getJSONObject(0);
 			String type = obj.getString("type");
@@ -145,7 +143,7 @@ public class Demo extends Activity {
 			}
 
 			embedWebView.loadData(embedBuf.toString(), "text/html", "utf-8");
-			embedResult.setText(embedBuf.toString());
+			embedResult.setText(embedBuf);
 		} catch (JSONException e) {
 			throw new RuntimeException("Couldn't parse response", e);
 		}
@@ -174,10 +172,12 @@ public class Demo extends Activity {
 		new Thread() {
 			@Override
 			public void run() {
+				long start = System.currentTimeMillis();
 				final JSONArray response = api.oembed(params);
+				final long elapsed = System.currentTimeMillis() - start;
 				handler.post(new Runnable() {
 					public void run() {
-						self.onEmbedResponse(response);
+						self.onEmbedResponse(response, elapsed);
 					}
 				});
 			}
