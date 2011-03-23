@@ -32,4 +32,4 @@ Note on Patches/Pull Requests
 Copyright
 ^^^^^^^^^
 
-Copyright (c) 2011 Embed.ly, Inc. See MIT-LICENSE for details.
+Copyright (c) 2011 Embedly, Inc.
