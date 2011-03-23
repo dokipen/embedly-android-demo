@@ -26,7 +26,8 @@ import android.widget.TextView;
 import com.embedly.api.Api;
 
 public class Demo extends Activity {
-	private Api api = new Api("Embedly-Android-Demo");
+	// Fill in real Pro key here:
+	private Api api = new Api("Embedly-Android-Demo", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 	private TextView embedResult;
 	private Button embedButton;
 	private EditText embedUrl;
@@ -57,6 +58,8 @@ public class Demo extends Activity {
 		});
 
 		registerForContextMenu(embedResult);
+		// makes testing on real device easier.  prefill url:
+		//embedUrl.setText("http://bit.ly/hsfykp");
 	}
 
 	@Override
