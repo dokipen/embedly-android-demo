@@ -5,8 +5,9 @@ The Embedly Android Demo App provides a reference implementation of the
 Embedly Pro endpoints for Android development.  To get it working, you will
 need to update src/com/embedly/android/demo/Demo.java with your Embedly Pro
 key.  We have provided EmbedlyDemo.apk with a working key if you'd like
-to try the app.  It is also available `here <http://static.embed.ly/apks/EmbedlyDemo.apk>`_
-with a `qr code <http://static.embed.ly/apks/EmbedlyDemo.apk.qr.png>`_.
+to try the app.  It is also available `here <http://static.embed.ly/apks/EmbedlyDemo.apk>`_.
+
+![qrcode!](<http://static.embed.ly/apks/EmbedlyDemo.apk.qr.png>)
 
 Also included in the source is libs/embedly-api-0.1.0.jar.  When writing
 your own app, check https://github.com/embedly/embedly-java for a the latest
