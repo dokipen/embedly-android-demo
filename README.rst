@@ -20,6 +20,17 @@ Prerequisites
 * Android SDK (I'm using api level 8)
 * The ADT Plugin (I'm using 10.0.1v20110311)
 
+Alternatively, I've added basic gradle support.  To build the apk::
+
+    gradle assemble
+
+To list tasks::
+ 
+    gradle tasks
+
+Be sure to edit Demo.java to add a real PRO key before building, or the
+app won't work.
+
 Note on Patches/Pull Requests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
