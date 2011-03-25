@@ -1,0 +1,5 @@
+sdk.dir = /opt/android-sdk-update-manager
+keyStore = /home/user/.android-keys
+keyAlias = my-release-key
+keyStorePassword = *************
+keyAliasPassword = *************

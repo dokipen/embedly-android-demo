@@ -1,0 +1,49 @@
+apply plugin: 'android'
+apply plugin: 'java'
+
+buildscript {
+    repositories {
+        mavenRepo(urls: 'http://jvoegele.com/maven2/')
+    }
+    dependencies {
+        classpath 'com.jvoegele.gradle.plugins:android-plugin:0.9.9'
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenRepo(urls: 'https://oss.sonatype.org/content/groups/public/')
+}
+
+dependencies {
+    compile 'com.embedly:embedly-api:0.1.+'
+}
+
+version = '0.1.0'
+
+androidPackage {
+    keyStore = keyStore
+    keyAlias = keyAlias
+    keyStorePassword = keyStorePassword
+    keyAliasPassword = keyAliasPassword
+}
+
+processResources {
+    expand (project.properties)
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+task configureDebug << {
+    jar.classifier = 'debug'
+}
+
+task configureRelease << {
+    proguard.enabled = true
+}
